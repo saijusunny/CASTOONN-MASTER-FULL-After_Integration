@@ -1,4 +1,4 @@
-{% extends 'index/index_creator/index_base_creator.html' %}
+{% extends 'index/base.html' %}
 {% load static %}
 
 {% block content %}
@@ -13,7 +13,7 @@
 
 body {
 
- background-image: url(static/images/background/Background.jpg);
+ background-image: url(static/images/background/background.jpg);
  width: 100%;
  height: 100vh;
  background-position: center;
@@ -242,7 +242,7 @@ body {
         <input type="text" name="username" placeholder=" &#xf007; Username" name="username"/>
         <input type="password" placeholder="&#xf084; Password" name="password" />
         <button type="submit" class="btn login">login</button>
-        <p><a href="#">Forgotten account ?</a></p>
+        <p><a href="{% url 'forgotPassword' %}">Forgotten account ?</a></p>
         <hr />
         <p style="text-align: center;">
           Don't have an account?<a href="{% url 'user_type'%}">Click here</a>

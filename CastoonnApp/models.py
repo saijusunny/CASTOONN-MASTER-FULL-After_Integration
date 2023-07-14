@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.hashers import make_password
 # User Registration Section
 class User_Registration(models.Model):
     
@@ -17,9 +17,13 @@ class User_Registration(models.Model):
     role = models.CharField(max_length=255,blank=True,null=True)
     username = models.CharField(max_length=255,blank=True,null=True)
     password = models.CharField(max_length=255,blank=True,null=True)
+    last_login = models.DateTimeField(null=True, blank=True)
 
     def _str_(self):
         return self.nickname
+    
+    def get_email_field_name(self):
+        return 'email'
 
 #Casting Call Creation
 

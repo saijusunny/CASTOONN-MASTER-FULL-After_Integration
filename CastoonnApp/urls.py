@@ -8,6 +8,10 @@ urlpatterns = [
     path('user_type', views.user_type, name='user_type'),
     path('login_main',views.login_main, name='login_main'),
 
+    path('forgotPassword/', views.forgotPassword,name='forgotPassword'),
+    path('resetpassword_validate/<uidb64>/<token>/', views.resetpassword_validate,name='resetpassword_validate'),
+    path('resetPassword/', views.resetPassword,name='resetPassword'),
+
     ################################################################################### <<<<<<<<< CREATOR MODULE >>>>>>>>>>>>>>>>>
     
     
