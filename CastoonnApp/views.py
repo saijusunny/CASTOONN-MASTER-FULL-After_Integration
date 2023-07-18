@@ -48,8 +48,10 @@ def login_main(request):
         elif User_Registration.objects.filter(username=request.POST['username'], password=request.POST['password'],role="user2").exists():
             member = User_Registration.objects.get(username=request.POST['username'],password=request.POST['password'])
             request.session['userid'] = member.id
-
-            return redirect('user_type')
+            if Profile_artist.objects.filter(user_id=member.id).exists():
+                return redirect('user_type')
+            else:
+                return redirect('artist_profile_view')
         else:
             messages.error(request, 'Invalid username or password')
     return render(request,'index/login.html')
@@ -122,4 +124,70 @@ def resetPassword(request):
 
 
 ######################################################################### <<<<<<<<<< ARTIST MODULE >>>>>>>>>>>>>>>>
+def artist_profile_view(request):
+    if request.session.has_key('userid'):
+        pass
+    else:
+        return redirect('/')
+    ids=request.session['userid']
+    usr=User_Registration.objects.get(id=ids)
+    if request.method == 'POST':
+        
+        firstname = request.POST.get('firstname',None)
+        lastname = request.POST.get('lastname',None)
+        phonenumber = request.POST.get('phonenumber',None)
+        email = request.POST.get('email',None)
+        gender = request.POST.get('gender',None)
+        date_of_birth = request.POST.get('date_of_birth',None)
+        marital_status = request.POST.get('marital_status',None)
+        profection = request.POST.get('profection',None)
+        height = request.POST.get('height',None)
+        weight = request.POST.get('weight',None)
+        interests = request.POST.get('interests',None)
+        hobbies = request.POST.get('hobbies',None)
+        passions = request.POST.get('passions',None)
+        goals = request.POST.get('goals',None)
+        achievements = request.POST.get('achievements',None)
+        social_media_links = request.POST.get('social_media_links',None)
+        skills = request.POST.get('skills',None)
+        awards = request.POST.get('awards',None)
+        message = request.POST.get('message',None)
+        
+        profile_artist = Profile_artist(
+            firstname=firstname,
+            lastname=lastname,
+            phonenumber=phonenumber,
+            email=email,
+            gender=gender,
+            date_of_birth=date_of_birth,
+            marital_status=marital_status,
+            profection=profection,
+            height=height,
+            weight=weight,
+            interests=interests,
+            hobbies=hobbies,
+            passions=passions,
+            goals=goals,
+            achievements=achievements,
+            social_media_links=social_media_links,
+            skills=skills,
+            awards=awards,
+            message=message,
+            user=usr
+        )
+        profile_artist.save()
 
+
+        return redirect('user_type')
+    context={
+        'user':usr
+    }
+    return render(request,'artist/profile_artist.html', context)
+
+
+def logout(request):
+    if 'userid' in request.session:  
+        request.session.flush()
+        return redirect('/')
+    else:
+        return redirect('/')

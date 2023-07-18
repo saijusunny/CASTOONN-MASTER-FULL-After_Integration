@@ -11,13 +11,14 @@ urlpatterns = [
     path('forgotPassword/', views.forgotPassword,name='forgotPassword'),
     path('resetpassword_validate/<uidb64>/<token>/', views.resetpassword_validate,name='resetpassword_validate'),
     path('resetPassword/', views.resetPassword,name='resetPassword'),
+    path('logout/', views.logout,name='logout'),
 
     ################################################################################### <<<<<<<<< CREATOR MODULE >>>>>>>>>>>>>>>>>
     
     
 
     ################################################################################### <<<<<<<<< Artist MODULE >>>>>>>>>>>>>>>>>
-    
+    path('artist_profile_view/',views.artist_profile_view,name="artist_profile_view"),
 
 
     
