@@ -25,6 +25,13 @@ class User_Registration(models.Model):
     def get_email_field_name(self):
         return 'email'
 
+class Email_Validation(models.Model):
+    email_temp = models.EmailField()
+    email_otp_temp =models.IntegerField(null=True,blank=True)
+
+    def __str__(self):
+        return self.email_temp + " " + str(self.email_otp_temp) 
+
 # Create Artist Profile
 class Profile_artist(models.Model):
     user = models.ForeignKey(User_Registration, on_delete=models.SET_NULL, null=True, blank=True)
