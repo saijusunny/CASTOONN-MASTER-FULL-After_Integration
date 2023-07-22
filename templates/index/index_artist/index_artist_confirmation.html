@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Usename & Password</title>
+    <title>Username & Password </title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -107,29 +107,39 @@
 </head>
 <body>
     <div class="registration-form">
-        <form method="POST" action="{% url 'index_artist_confirmation' user_id %}">
+
+        <form  method="post" action="{% url 'index_artist_confirmation' user_id %}">
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
             {% csrf_token %}
             <div class="form-group fontuser">
+                <input type="text" class="form-control item pl-5" name="username" id="username" placeholder="Username"> 
+             
+                
                 <i class="fa-regular fa-user"></i>
-                <input type="text" class="form-control item  pl-5" id="username" placeholder="Username"> 
                 
             </div>
             <div class="form-group fontuser">
                 
+            <input type="password" class="form-control item pl-5" name="password" id="password" placeholder="Password"> 
+               
 
                 <i class="fa-sharp fa-solid fa-lock"></i>
-                <input type="password" class="form-control item  pl-5" id="password" placeholder="Password"> 
             </div>
             <div class="form-group fontuser">
-                
+                <input type="password" class="form-control item pl-5"  name="confirm_password" id="password" placeholder="confirm Password">
                 
                 <i class="fa-sharp fa-solid fa-lock"></i>
-                <input type="password" class="form-control item  pl-5" id="password" placeholder="confirm Password">
             </div>
             
             <div class="confirm-button">
-              
-                <button type="button" style="color: black; background-color: white"; class="btn btn-block create-account">confirm</button>
+                <button type="button"style="color: #c21b98; background-color: black;"  class="btn btn-block create-account">Cancel</button>
+                <button type="submit" style="color: black; background-color: white"; class="btn btn-block create-account">confirm</button>
             </div>
         </form>
     </div>

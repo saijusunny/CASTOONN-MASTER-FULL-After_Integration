@@ -5,120 +5,121 @@
 
 {% block content %}
 
-<style>
-    @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
 
-    body{
-   
-    background-image: url("{% static 'images/background/bbb.jpg' %}");
-    background-position: center;
-    background-size:cover;
-    padding: 0.8%;
-    position:relative;
+<style>
+     @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
+
+body{
+
+background-image: url("{% static 'images/background/bbb.jpg' %}");
+background-position: center;
+background-size:cover;
+padding: 0.8%;
+position:relative;
 }
 
 .registration-form{
-    margin-top: 50px;
-	padding: 50px 0;
-  
+margin-top: 50px;
+padding: 50px 0;
+
 }
 
 .registration-form form{
-    background: linear-gradient(-45deg,#c21b98, #8a126c);
-    opacity:0.7;
-    max-width: 498px;
-    height:610px;
-    margin: auto;
-    padding: 50px 70px;
-    border-radius: 30px;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.075);
+background: linear-gradient(-45deg,#c21b98, #8a126c);
+opacity:0.7;
+max-width: 498px;
+height:700px;
+margin: auto;
+padding: 50px 70px;
+border-radius: 30px;
+box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.075);
 }
 
 .registration-form .item{
-	border-radius: 20px;
-    margin-bottom:20px;
-    padding:7px 20px;
+border-radius: 20px;
+margin-bottom:20px;
+padding:7px 20px;
 }
 
 .registration-form .create-account{
-    border-radius:10px;
-    padding: 10px 20px;
-    font-size: 18px;
-    font-weight: bold;
-    background-color: #5791ff;
-    border: none;
-    color: white;
-    margin-top: 20px;
+border-radius:10px;
+padding: 10px 20px;
+font-size: 18px;
+font-weight: bold;
+background-color: #5791ff;
+border: none;
+color: white;
+margin-top: 20px;
 }
 .confirm-button{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-
-    }
-.demo1{
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    margin-bottom:5px;
+
 }
-    .fontuser {
-        position: relative;
+.demo1{
+display:flex;
+justify-content: center;
+align-items: center;
+gap: 10px;
+margin-bottom:5px;
+}
+.fontuser {
+    position: relative;
 
-    }
-    .fontuser i{
-        position: absolute;
-        left: 15px;
-        top: 16px;
+}
+.fontuser i{
+    position: absolute;
+    left: 15px;
+    top: 16px;
 
-    }
+}
 
-    .h3-size {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  line-height: 1.1;
+.h3-size {
+margin-top: 10px;
+margin-bottom: 10px;
+line-height: 1.1;
 }
 
 .center-text {
-  text-align: center;
+text-align: center;
 }
- 
+
 
 @media (max-width: 576px) {
-    .registration-form form{
-        padding: 50px 20px;
-    }
+.registration-form form{
+    padding: 50px 20px;
+}
 
-    .registration-form .form-icon{
-        width: 70px;
-        height: 70px;
-        font-size: 30px;
-        line-height: 70px;
-    }
-   
+.registration-form .form-icon{
+    width: 70px;
+    height: 70px;
+    font-size: 30px;
+    line-height: 70px;
+}
+
 }
 
 h3{
-    color: #fff;
+color: #fff;
 }
 h5 {
-    font-size: 20px;
-    font-weight: bold;
-    display: inline-block;
-    font-family:'Open Sans', sans-serif;
-    margin:-50px;
-    margin-right:200px;
-    margin-top: 25px;
-    color: rgb(255, 255, 255);
-    
+font-size: 20px;
+font-weight: bold;
+display: inline-block;
+font-family:'Open Sans', sans-serif;
+margin:-50px;
+margin-right:200px;
+margin-top: 25px;
+color: rgb(255, 255, 255);
+
 }
 h1{
-    color: rgb(255, 255, 255);
+color: rgb(255, 255, 255);
 }
 .first{
-    margin-bottom: -80px;
+margin-bottom: -80px;
 }
 
 
@@ -142,19 +143,24 @@ h1{
         <h5>Register as</h5>	
         <select class="item" name='my_option' style="border-radius: 40px;padding:5px 0px; padding-right:70px; opacity:0.7; " id="my_option" onchange="selection()" >
             
-            <option value="creator">Creator</option>
-            <option value="artist">Artist</option>
+            <option value="creator" selected>Creator</option>
+            <option value="artist" >Artist</option>
            
         </select>
         </center>  
     </div>
 
-    <div class="registration-form">    
+    <div class="registration-form">        
             <form method="post" action="{% url 'creator_registration' %}">
                 {% csrf_token %}
-                
-
-                <h3>Creator</h3>
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <h3>Artist</h3>
                 <div class="form-group demo1">
                     {{form.name}}
                     {{form.lastname}}
@@ -178,16 +184,14 @@ h1{
 
                 <div class="form-group fontuser">
                     {{form.phone_otp}}
-                    
-                </div> 
-                <div class="form-group fontuser demo1">
-                    {{form.email}}  
-                    <div id="myButton" class="btn btn-light" onclick="send_mail()">Send OTP</div>
-                </div> 
-                <div class="form-group fontuser demo1">
-                    {{form.email_otp}} 
-                    <div id="otpButton" class="btn btn-light" onclick="verify_mail()" >Verify</div>
-                </div> 
+                    <div class="form-group fontuser demo1">
+                        {{form.email}}  
+                        <div id="myButton" class="btn btn-light" onclick="send_mail()">Send</div>
+                    </div> 
+                    <div class="form-group fontuser demo1">
+                        {{form.email_otp}} 
+                        <div id="otpButton" class="btn btn-light" onclick="verify_mail()" >Verify</div>
+                    </div> 
                     {{form.profession}}
                     {{form.experience}}
                     {{form.role}}
@@ -215,6 +219,8 @@ h1{
                  window.location.href="{% url 'artist_registration'%}" 
             }
         }
+
+                
     // Email Otp Send
     function send_mail(){
         var inputValues= document.getElementById("email").value
@@ -262,11 +268,20 @@ h1{
             });
         }
     }
+ //  format  for date input fields.
+    $(document).ready(function() {
+        $('#birthday').datepicker({
+            format: 'yyyy-mm-dd', 
+            autoclose: true,
+            todayHighlight: true,
+        });
+    });
     </script>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
     <script src="assets/js/script.js"></script>
-
+</body>
+</html>
 
 {% endblock  %}

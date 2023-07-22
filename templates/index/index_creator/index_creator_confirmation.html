@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Usename & Password </title>
+    <title>Username & Password</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -110,27 +110,31 @@
         
         <form method="post" action="{% url 'index_creator_confirmation' user_id %}">
             {% csrf_token %}
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
        
             <div class="form-group fontuser">
                 
-                
+                <input type="text" class="form-control item pl-5" name="username" id="username" placeholder="Username"> 
                
                 <i class="fa-regular fa-user"></i>
-                <input type="text" class="form-control item pl-5" name="username" id="username" placeholder="Username"> 
                 
             </div>
             <div class="form-group fontuser">
-                
-                 
-                
-                <i class="fa-sharp fa-solid fa-lock"></i>
                 <input type="password" class="form-control item  pl-5" name="password" id="password" placeholder="Password">
+                <i class="fa-sharp fa-solid fa-lock"></i>
             </div>
             <div class="form-group fontuser">
-                 
-               
-                <i class="fa-sharp fa-solid fa-lock"></i>
-                <input type="password " class="form-control item  pl-5" name="confirm_password" id="password" placeholder="confirm Password"> 
+                <div class="password-toggle">
+                    <input type="password" class="form-control item  pl-5" name="confirm_password" id="confirm_password" placeholder="Confirm Password">
+                    <i class="fa-sharp fa-solid fa-eye toggle-password"></i>
+                </div>
             </div>
             
             <div class="confirm-button">
@@ -139,14 +143,15 @@
             </div>
         </form>
     </div>
+
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
     <script src="assets/js/script.js">
         
-        setTimeout(function(){
-            $('#message').fadeOut('slow')
-        },4000
-        )
-    </script>
+  
+  
+        
+  
+    
 </body>
 </html>

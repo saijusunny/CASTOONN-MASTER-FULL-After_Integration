@@ -27,7 +27,7 @@ def index(request):
 
 
 def user_type(request):
-    print(request.session['userid'])
+
     return render(request, 'index/user_type.html')
 
 def login_main(request):
@@ -141,22 +141,28 @@ def creator_registration(request):
             email_otp = form.cleaned_data['email_otp']
             experience = form.cleaned_data['experience']
             role = form.cleaned_data['role']
-            user_registration = User_Registration(
-                name=name,
-                lastname=lastname,
-                nickname=nickname,
-                gender=gender,
-                profession=profession,
-                date_of_birth=date_of_birth,
-                phone_number=phone_number,
-                phone_otp=phone_otp,
-                email=email,
-                email_otp=email_otp,
-                experience=experience,
-                role=role
-            )
-            user_registration.save()
-            user_id = user_registration.pk
+            
+            if User_Registration.objects.filter(email=email).exists():
+                messages.error(request, 'Email Id already exists')
+                return redirect('creator_registration')
+            else:
+                
+                user_registration = User_Registration(
+                    name=name,
+                    lastname=lastname,
+                    nickname=nickname,
+                    gender=gender,
+                    profession=profession,
+                    date_of_birth=date_of_birth,
+                    phone_number=phone_number,
+                    phone_otp=phone_otp,
+                    email=email,
+                    email_otp=email_otp,
+                    experience=experience,
+                    role=role
+                )
+                user_registration.save()
+                user_id = user_registration.pk
             return redirect('index_creator_confirmation',user_id=user_id)
     else:
         form = User_RegistrationForm()
@@ -175,18 +181,19 @@ def index_creator_confirmation(request,user_id):
             if User_Registration.objects.filter(username=username).exists():
                 messages.error(request, 'Username already exists')
                 return redirect('index_creator_confirmation', user_id=user_id)
-            creator_object = get_object_or_404(User_Registration, pk=user_id)
-            creator_object.username=username
-            creator_object.password = password
-            creator_object.save()
-            messages.success(request, 'Thank you for registering with us.  Please Create Username and Password.')
+            else:
+                creator_object = get_object_or_404(User_Registration, pk=user_id)
+                creator_object.username=username
+                creator_object.password = password
+                creator_object.save()
+                messages.success(request, 'Thank you for registering with us.')
             return redirect('login_main')
         else:
-            messages.success(request, ' Password and Confirm Password are not matching. Please verify it.')
-
-            return render(request,'index\index_creator\index_creator_confirmation.html',{'user_id':user_id})
+            messages.error(request, ' Password and Confirm Password are not matching. Please verify it.')
+            return redirect('index_creator_confirmation', user_id=user_id)
 
     return render(request,'index\index_creator\index_creator_confirmation.html',{'user_id':user_id})
+
 
 #<<<<<<<<<< Email Verification >>>>>>>>>>>>>>
 def email_send(request):
@@ -197,25 +204,23 @@ def email_send(request):
     user_email.save()
     subject = 'Catoonn Email Verification OTP'
     message = f'Hi {email},\nYour Email Verification OTP is: {otp}'
-    from_email = 'your-email@gmail.com'
+    from_email = 'email'
     recipient_list = [email]
     send_mail(subject, message, from_email, recipient_list)
 
-    return HttpResponse(status=204)
 
 def verify_email_otp(request):
-
     email=request.GET.get('emailValue')
     otp=request.GET.get('otpValue')
-   
+    print(otp)
+    print(email)
     instance = get_object_or_404(Email_Validation,email_otp_temp=otp)
     if instance.email_temp == email:
         result="Email Verified"
     else:
         result="Your Entered Otp Is Incorrect"
-   
-    return JsonResponse({"status": " not", 'result': result})
-
+    print(result)
+    return JsonResponse({"status": " not", 'result':result})
 
 
 
@@ -226,40 +231,44 @@ def artist_registration(request):
     if request.method =='POST':
         form = User_RegistrationForm(request.POST)
         if form.is_valid():
-            user_model=form.save()
-            user_id = user_model.pk
-            
-            return redirect('index_artist_confirmation',user_id=user_id)
+            email = form.cleaned_data['email']
+            if User_Registration.objects.filter(email=email).exists():
+                messages.error(request, 'Email Id already exists')
+                return redirect('artist_registration')
+            else:
+                user_model=form.save()
+                user_id = user_model.pk
+                return redirect('index_artist_confirmation',user_id=user_id)
     else:
         form = User_RegistrationForm()
         form.initial['role'] = 'user2'
-        
     return render(request,'index\index_artist\index_artist_registraion.html',{'form':form})
 
 
 def index_artist_confirmation(request,user_id):
-    print("haiiii")
-    if request.method == "POST":
+
+    if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
 
         if password == confirm_password:
-            print("sucess")
-            creator_object = User_Registration.objects.get(pk=user_id)
-            creator_object.username=username
-            creator_object.password = password
-            creator_object.save()
-            return redirect('login_main')
+            print("success")
+            if User_Registration.objects.filter(username=username).exists():
+                messages.error(request, 'Username already exists')
+                return redirect('index_artist_confirmation', user_id=user_id)
+            else:
+                artist_object = get_object_or_404(User_Registration, pk=user_id)
+                artist_object.username=username
+                artist_object.password = password
+                artist_object.save()
+                messages.success(request, 'Thank you for registering with us.')
+                return redirect('login_main')
         else:
-            error_message = 'Password and Confirm Password do not match.'
-            return render(request,'index\index_artist\index_artist_confirmation.html',{'error_message':error_message})
+            messages.error(request, ' Password and Confirm Password are not matching. Please verify it.')
+            return redirect('index_artist_confirmation', user_id=user_id)
 
     return render(request,'index\index_artist\index_artist_confirmation.html',{'user_id':user_id})
-
-
-
-
 def artist_profile_view(request):
     if request.session.has_key('userid'):
         pass
