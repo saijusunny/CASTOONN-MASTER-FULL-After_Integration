@@ -19,7 +19,8 @@ import random
 import string
 from django.http import HttpResponse
 from django.http import JsonResponse
-
+import json
+from datetime import datetime, timedelta
 ######################################################################### <<<<<<<<<< LANDING MODULE >>>>>>>>>>>>>>
 def index(request):
     return render(request, 'index/index.html')
@@ -122,7 +123,12 @@ def resetPassword(request):
             return redirect('resetPassword')
     else:
         return render(request,'index/forget-password/resetPassword.html')
-
+def logout(request):
+    if 'userid' in request.session:  
+        request.session.flush()
+        return redirect('/')
+    else:
+        return redirect('/')
 ############################################################# <<<<<<<<<< CREATOR MODULE >>>>>>>>>>>>>>
 def creator_registration(request):
 
@@ -329,10 +335,55 @@ def artist_profile_view(request):
     }
     return render(request,'artist/profile_artist.html', context)
 
+# subscription Plans
+def subscription_plan(request):
+    plans = SubscriptionPlan.objects.all()
+    context = {'plans': plans,'selected_plan':'Boost'}
+    return render(request, 'artist/artist_subscription.html', context)
 
-def logout(request):
-    if 'userid' in request.session:  
-        request.session.flush()
-        return redirect('/')
+def subscription_plan_profile(request):
+    plans = SubscriptionPlan.objects.all()
+    context = {'plans': plans,'selected_plan':'Boost'}
+    return render(request, 'artist/artist_subscription_profile.html', context)
+
+def process_payment(request):
+    if request.session.has_key('userid'):
+        pass
     else:
         return redirect('/')
+    ids=request.session['userid']
+    usr=User_Registration.objects.get(id=ids)
+    if request.method == "POST":
+     
+        # try:
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        plan = data.get('plan')
+        amount = data.get('amount')
+        start_date = datetime.now().date()
+        print(plan)
+        if plan == '199 1 month':
+            end_date = start_date + timedelta(days=30)
+        elif plan == '499 3 months':
+            end_date = start_date + timedelta(days=90)
+        elif plan == '799 6 months':
+            end_date = start_date + timedelta(days=180)
+        else:
+            return JsonResponse({'message': 'Invalid plan selection'}, status=400)
+        
+        payment = Payment.objects.create(
+            user=usr,
+            plan=plan,
+            amount=amount,
+            start_date=start_date,
+            end_date=end_date
+        )
+        
+        # Return a JSON response indicating the success of the payment processing
+        return JsonResponse({'message': 'Payment successful'})
+        # except Exception as e:
+        #     return JsonResponse({'message': 'Error processing payment', 'error': str(e)}, status=400)
+    else:
+        # Handle invalid request methods
+        return JsonResponse({'message': 'Invalid request method'}, status=400)
+

@@ -23,6 +23,11 @@ urlpatterns = [
     path('artist_registration/',views.artist_registration,name='artist_registration'),
     path('index_artist_confirmation/<int:user_id>/',views.index_artist_confirmation,name='index_artist_confirmation'),
 
+    # Subscription Plans
+    path('subscription_plan', views.subscription_plan, name='subscription_plan'),
+    path('subscription_plan_profile', views.subscription_plan_profile, name='subscription_plan_profile'),
+    path('process_payment/', views.process_payment, name='process_payment'),
+
 
     
     ]

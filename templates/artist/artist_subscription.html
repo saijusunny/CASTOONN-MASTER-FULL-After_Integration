@@ -1,0 +1,146 @@
+{% extends "artist/base_without_nav.html" %}
+{% block content %}
+<style>
+body {
+
+background-image: url(static/images/background/Background.jpg);
+width: 100%;
+
+background-position: center;
+background-size: cover;
+padding: 0 8%;
+position: relative;
+
+
+}
+#login-toggle {
+  background: white;
+
+  border: none;
+  font-weight: bold;
+  font-size: 1.2em;
+  padding: 0.8em 1em 0.8em 1em !important;
+  transition: 0.5s;
+  border: 1px solid #ebebeb;
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+</style>
+    
+    <div class="subscription-box">
+        <div id="login-toggle">
+            <h1 class="subscription-page">Subscription Plan</h1>
+            <p class="subscription-page">Choose you Premium plan:</p>
+        </div>
+        
+        <table class="subscription-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    {% for plan in plans %}
+                    <th{% if selected_plan == plan.name %} class="selected"{% endif %}>{{ plan.name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Feature 1</td>
+                    {% for plan in plans %}
+                    <td{% if selected_plan == plan.name %} class="selected"{% endif %}>{% if plan.feature1 %}✓{% else %}✗{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Feature 2</td>
+                    {% for plan in plans %}
+                    <td{% if selected_plan == plan.name %} class="selected"{% endif %}>{% if plan.feature2 %}✓{% else %}✗{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Feature 3</td>
+                    {% for plan in plans %}
+                    <td{% if selected_plan == plan.name %} class="selected"{% endif %}>{% if plan.feature3 %}✓{% else %}✗{% endif %}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="selection-box">
+            <div class="small-box"  data-plan="199 1 month" onclick="selectBox(this)">199<br> 1 month</div>
+            <div class="small-box"  data-plan="499 3 months" onclick="selectBox(this)">499 <br>  3 months</div>
+            <div class="small-box"  data-plan="799 6 months" onclick="selectBox(this)">799 <br>  6 months</div>
+        </div>
+        <div class="tacbox">
+            <input id="checkbox" type="checkbox" />
+            <label for="checkbox" style="color: white;"> I agree to these <a href="#" style="text-decoration: none; color: #c21b98;">Terms and Conditions</a>.</label>
+          </div>
+    
+          <div class="subscription-payment">
+          <button id="payButton" class="btn-hover color-1 ">Pay using UPI</button>
+          </div>
+    </div>
+    
+
+    <script>
+        function selectBox(box) {
+            var smallBoxes = document.querySelectorAll('.small-box');
+            
+            smallBoxes.forEach(function (box) {
+              box.classList.remove('selected');
+            });
+            
+            box.classList.add('selected');
+          }
+
+          document.getElementById("payButton").addEventListener("click", function() {
+            // Get the selected plan
+            var selectedBox = document.querySelector('.small-box.selected');
+            var selectedPlan = selectedBox.dataset.plan;
+            
+            // Get the amount based on the selected plan
+            var amount = 0;
+            if (selectedPlan === '199 1 month') {
+                amount = 199;
+            } else if (selectedPlan === '499 3 months') {
+                amount = 499;
+            } else if (selectedPlan === '799 6 months') {
+                amount = 799;
+            }
+            
+            // Get the current user ID from the Django template context
+            var userId = '{{ request.user.id }}';
+            
+            // Create an object to store the payment data
+            var paymentData = {
+                //'user_id': userId,
+                'plan': selectedPlan,
+                'amount': amount
+            };
+            
+            // Send the payment data to your Django backend
+            fetch('{% url "process_payment"%}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'  // Include the CSRF token for Django
+                },
+                body: JSON.stringify(paymentData)
+            })
+            .then(response => {
+                // Handle the response from your Django backend
+                // For example, show a success message or redirect to a success page
+                alert("Payment Success")
+                
+            })
+            .catch(error => {
+                // Handle any errors that occur during the request
+                console.error("An error occurred during payment:", error);
+            });
+        });
+          
+        
+    </script>
+
+    {% endblock %}
